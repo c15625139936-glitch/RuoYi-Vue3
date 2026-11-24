@@ -1,0 +1,35 @@
+# 前端 CI（Vue3 / Vite6 / npm，独立仓 RuoYi-Vue3，根目录即前端工程）
+# 触发：push 到 master、PR 到 master。
+# 工具链：ESLint（0 error）+ Vitest（纯函数单测）已接入。
+name: frontend-ci
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit test
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build:prod
